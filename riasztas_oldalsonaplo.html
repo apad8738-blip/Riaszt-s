@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Riasztás rendszer - Oldalsó naplóval</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; background: black; color: white; margin: 0; padding: 20px; }
+    .left { flex: 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .right { flex: 1; padding-left: 20px; }
+    h2 { margin-top: 0; color: #eee; }
+    button { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; color: white; font-weight: bold; }
+    .btn-green { background: darkgreen; }
+    .btn-yellow { background: goldenrod; }
+    .btn-red { background: darkred; }
+    .btn-blue { background: royalblue; grid-column: span 3; }
+    .btn-clear { background: gray; grid-column: span 3; }
+    #log { border: 1px solid #555; height: 400px; overflow-y: auto; padding: 10px; background: #111; color: #0f0; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <div class="left">
+    <h2 style="grid-column: span 3; text-align:center;">Riasztás gombok</h2>
+
+    <!-- Zöld gombok -->
+    <button class="btn-green" onclick="addToLog('Karib.mp3','Karib')">Karib</button>
+    <button class="btn-green" onclick="addToLog('Westend.mp3','Westend')">Westend</button>
+    <button class="btn-green" onclick="addToLog('Regi.mp3','Regi')">Regi</button>
+
+    <!-- Sárga gombok -->
+    <button class="btn-yellow" onclick="addToLog('Tűzeset.mp3','Tűzeset')">Tűzeset</button>
+    <button class="btn-yellow" onclick="addToLog('Műszakimentés.mp3','Műszaki mentés')">Műszaki mentés</button>
+
+    <!-- Piros gombok -->
+    <button class="btn-red" onclick="addToLog('1 Fecskendő.mp3','1. Fecskendő')">1. Fecskendő</button>
+    <button class="btn-red" onclick="addToLog('2 Fecskendő.mp3','2. Fecskendő')">2. Fecskendő</button>
+    <button class="btn-red" onclick="addToLog('3 Fecskendő.mp3','3. Fecskendő')">3. Fecskendő</button>
+    <button class="btn-red" onclick="addToLog('Emelő.mp3','Emelő')">Emelő</button>
+    <button class="btn-red" onclick="addToLog('Víz.mp3','Víz')">Víz</button>
+    <button class="btn-red" onclick="addToLog('Műszaki.mp3','Műszaki')">Műszaki</button>
+    <button class="btn-red" onclick="addToLog('Videó Csoport.mp3','Videó Csoport')">Videó Csoport</button>
+
+    <!-- Kék riasztás -->
+    <button class="btn-blue" onclick="startSequence()">RIASZTÁS</button>
+
+    <!-- Napló törlése -->
+    <button class="btn-clear" onclick="clearLog()">Napló törlése</button>
+  </div>
+
+  <div class="right">
+    <h2>Napló</h2>
+    <div id="log"></div>
+  </div>
+
+<script>
+let logData = [];
+
+// Naplózás és fájl hozzárendelés
+function addToLog(file, name) {
+  logData.push({ file, name });
+  const logDiv = document.getElementById('log');
+  const entry = document.createElement('div');
+  entry.textContent = new Date().toLocaleTimeString() + " - " + name;
+  logDiv.appendChild(entry);
+  logDiv.scrollTop = logDiv.scrollHeight;
+}
+
+// Riasztás lejátszási sorrend
+function startSequence() {
+  if (logData.length === 0) {
+    alert("Nincs naplózott gombnyomás!");
+    return;
+  }
+  let i = 0;
+  function playNext() {
+    if (i >= logData.length) return;
+    const audio = new Audio(logData[i].file);
+    audio.onended = () => { i++; playNext(); };
+    audio.play();
+  }
+  playNext();
+}
+
+// Napló törlése
+function clearLog() {
+  logData = [];
+  document.getElementById('log').innerHTML = "";
+}
+</script>
+</body>
+</html>
